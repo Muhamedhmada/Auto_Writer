@@ -3,17 +3,15 @@ import JoditEditor from 'jodit-react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMicrophone  , faMicrophoneLinesSlash} from '@fortawesome/free-solid-svg-icons';
 import React, { useState , useRef , useMemo , useEffect} from 'react';
-import { Select  , Form} from 'antd';
+import { Select  } from 'antd';
 
 function RichText(){
    const editor = useRef(null);
-   const [content, setContent] = useState('')
    const [transcript, setTranscript] = useState('');
    const [isListening, setIsListening] = useState(false);
    const recognitionRef = useRef(null);
-   const [language , setLagnuage] = useState("ar-SA")
+   const [language , setLagnuage] = useState("")
    const [startRec , setStartRec] = useState(false)
-   const [richValue , setRichValue] = useState("")
 
 
   // modules is the propertis that you can add it to text
@@ -78,11 +76,8 @@ function RichText(){
     // اما يسجل هيحفظ الريكورد هنا علشان بعدها يترجم
     const recognition = new SpeechRecognition();
 
-    console.log(recognition)
-
     // You Can make state and choose language from an input or button
-    recognition.lang = language?language:"ar-SA"; // Arabic language for transcription
-
+    recognition.lang = language; // Use selected language for transcription
 
     // علشان المحادثه متقفش غير اما انا اوقفها بالزرار
     // لو خليتها false هيوقف التسجيل مع اول وقف ليك وانت بتتكلم
@@ -93,12 +88,10 @@ function RichText(){
 
 
     // variable that store the final resutl of text
-    let finalTranscript = ''
+    let finalTranscript = transcript
 
     // بتشتغل كل اما بييجى نتيجه جديده يعنى كل اما تتكلم هى بتشتغل
     recognition.onresult = (event) => {
-      console.log("you speek now")
-      console.log(event)
       // اللى بيشيل الكلام اللى بتقوله
       let interimTranscript = ''; // Temporary holder for current interim results
 
@@ -130,10 +123,11 @@ function RichText(){
 
     recognitionRef.current = recognition;
 
-  }, []);
+  }, [language , transcript]);
 
 
   const startListening = () => {
+
     setStartRec(true)
     console.log(new window.webkitSpeechRecognition())
     // console.log()
@@ -143,6 +137,8 @@ function RichText(){
 
       // START RECORDING
       recognitionRef.current.start(); // Start recognition
+
+      recognitionRef.current.lang = language
 
       // CHANGING STATE 
       setIsListening(true);
@@ -179,16 +175,15 @@ function RichText(){
           value ={transcript}
           config={config}
           tabIndex={1}
-          onChange={newContent => {setTranscript(newContent.replace(/<[^>]+>/g, ''))
-          console.log(newContent)
-          }}
+          onChange={newContent => setTranscript(newContent)}
+          // console.log(newContent)
+          
           // onChange={newContent => {}}   xcv
           className="richText"
         />
-        {richValue}
         <div className='form'>
           <Select
-            onChange={(e)=>setLagnuage(e)}
+            onChange={(e)=>{setLagnuage(e) ;console.log(language)}}
             showSearch
             placeholder="Select a language"
             filterOption={(input, option) =>
