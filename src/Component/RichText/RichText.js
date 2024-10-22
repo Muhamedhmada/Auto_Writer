@@ -10,7 +10,7 @@ function RichText(){
    const [transcript, setTranscript] = useState('');
    const [isListening, setIsListening] = useState(false);
    const recognitionRef = useRef(null);
-   const [language , setLagnuage] = useState("")
+   const [language , setLagnuage] = useState("ar-SA")
    const [startRec , setStartRec] = useState(false)
 
 
